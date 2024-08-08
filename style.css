@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    height: 100vh;
+    min-height: 100vh;
+}
+.container {
+    position: relative;
+    display: inline-block;
+    background-color: red;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.cur-score, .high-score {
+    position: absolute;
+    color: wheat;
+}
+.cur-score {
+    top: -1.5em;
+    left: 0;
+}
+.high-score {
+    top: -1.5em;
+    left: 10em;
+}
+#screen {
+    position: relative;
+    width: 70vh;
+    height: 80vh;
+    border: 3px solid white;
+}
