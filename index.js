@@ -51,7 +51,6 @@ document.addEventListener('keydown', (event) => {
             break;
         }
     }
-    
 });
 
 setInterval(() => {
@@ -64,13 +63,18 @@ setInterval(() => {
     ctx.fillRect(curPosX, curPosY, rectSize, rectSize);
 }, 250);
 
-// 목표물 무작위 좌표 생성
-while(1) {
-    targetPointX = Math.floor(Math.random() * (CANVAS_WIDTH - rectSize - 2 * paddingSize + 1)) + 16; // 패딩은 좌우 
-    targetPointY = Math.floor(Math.random() * (CANVAS_HEIGHT - rectSize - 2 * paddingSize + 1)) + 16; // 1을 더하는 이유는 최대값 포함(이하)시키기 위함
+generateTargePoint(); // 초기 게임시작 목표물 생성
 
-    if(targetPointX%16 == 0 && targetPointY%16 == 0) {
-        ctx.fillRect(targetPointX, targetPointY, rectSize, rectSize);
-        break;
+// 목표물 무작위 좌표 생성
+function generateTargePoint() {
+    while(1) {
+        targetPointX = Math.floor(Math.random() * (CANVAS_WIDTH - rectSize - 2 * paddingSize + 1)) + 16; // 패딩은 좌우 양쪽이므로 2를 곱해준 값을 뺌
+        targetPointY = Math.floor(Math.random() * (CANVAS_HEIGHT - rectSize - 2 * paddingSize + 1)) + 16; // 1을 더하는 이유는 최대값 포함(이하)시키기 위함
+    
+        // (16,16)의 배수 위치에 생성하기 위함
+        if(targetPointX%16 == 0 && targetPointY%16 == 0) {
+            ctx.fillRect(targetPointX, targetPointY, rectSize, rectSize);
+            break;
+        }
     }
 }
