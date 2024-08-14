@@ -54,52 +54,63 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp': {
             moveX = 0;
             moveY = -16;
+            
             break;
         }
         case 'ArrowDown' : {
             moveX = 0;
             moveY = 16;
+            
             break;
         }
         case 'ArrowLeft' : {
             moveX = -16;
             moveY = 0;
+            
             break;
         }
         case 'ArrowRight' : {
             moveX = 16;
             moveY = 0;
+            
             break;
         }
     }
 });
 generateTargePoint(); // 초기 게임시작 목표물 생성
+
+/*
+*스네이크가 움직일때마다 꼬리를 제거하고 머리에 추가하는 방식으로
+*스네이크가 움직이는 것처럼 보이는 효과를 내는 로직
+*/
 setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // 이전 상자 제거
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
     ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 임시생성
 
     let snakeX = snake.body[0].x;
     let snakeY = snake.body[0].y;
 
     // 목표물 충돌
-    if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) { // 임시 충돌 확인
-        ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize);
+    if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) {
+        ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize) // 해당위치 목표물 제거
         generateTargePoint();
     } else {
-        snake.body.pop();  // 스네이크가 먹지 않았을 경우 꼬리를 제거
+        snake.body.pop();  // 먹지 않았을 경우 꼬리를 제거
     }
 
     snakeX += moveX;
     snakeY += moveY;
     const newHead = { x: snakeX, y: snakeY };
-    snake.body.unshift(newHead);
+    snake.body.unshift(newHead); // 배열의 처음에 추가
 
+    // 스네이크 그리기
     for(let i=0; i<snake.body.length; i++) {
         ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
         console.log(snake.body[i]);
     }
 
-},100);
+}, 100);
+
 
 // 목표물 무작위 생성
 function generateTargePoint() {
