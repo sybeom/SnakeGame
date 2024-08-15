@@ -54,38 +54,39 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp': {
             moveX = 0;
             moveY = -16;
-            
+            test();
             break;
         }
         case 'ArrowDown' : {
             moveX = 0;
             moveY = 16;
-            
+            test();
             break;
         }
         case 'ArrowLeft' : {
             moveX = -16;
             moveY = 0;
-            
+            test();
             break;
         }
         case 'ArrowRight' : {
             moveX = 16;
             moveY = 0;
-            
+            test();
             break;
         }
     }
 });
 generateTargePoint(); // 초기 게임시작 목표물 생성
-
+test();
 /*
 *스네이크가 움직일때마다 꼬리를 제거하고 머리에 추가하는 방식으로
 *스네이크가 움직이는 것처럼 보이는 효과를 내는 로직
 */
-setInterval(() => {
+function test() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
-    ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 임시생성
+    ctx.fillStyle = "blue";
+    ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
 
     let snakeX = snake.body[0].x;
     let snakeY = snake.body[0].y;
@@ -105,11 +106,15 @@ setInterval(() => {
 
     // 스네이크 그리기
     for(let i=0; i<snake.body.length; i++) {
+        if(i == 0) {
+            ctx.fillStyle = "yellow";
+        } else {
+            ctx.fillStyle = "black";
+        }
         ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
-        console.log(snake.body[i]);
     }
-
-}, 100);
+    
+}
 
 
 // 목표물 무작위 생성
