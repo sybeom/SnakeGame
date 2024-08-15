@@ -10,7 +10,8 @@ class Snake {
 }
 
 const canvas = document.querySelector('#screen');
-const highScore = document.querySelector('.cur-score');
+const curScore = document.querySelector('#cur-score');
+const highScore = document.querySelector('#high-score');
 const ctx = canvas.getContext("2d");
 const CANVAS_WIDTH = 512; // 16배수, 16 * 32
 const CANVAS_HEIGHT = 688; // 16배수, 16 * 43
@@ -20,22 +21,38 @@ let targetPointX = 0; // 목표물 x좌표
 let targetPointY = 0;
 let moveX = 0; // x좌표만큼 움직일 양
 let moveY = 0;
+let curValue = 0; // 현재 점수
+let highValue = 0; // 최고 점수
+let snake = undefined;
 
-// DPR 값 가져오기
-const dpr = window.devicePixelRatio;
 
-// 화면에 보이는 캔버스 크기
-canvas.style.width = `${CANVAS_WIDTH}px`;
-canvas.style.height = `${CANVAS_HEIGHT}px`;
+init();
 
-// 캔버스의 그리기 영역 크기
-canvas.width = CANVAS_WIDTH * dpr;
-canvas.height = CANVAS_HEIGHT * dpr;
+function init() {
+    // DPR 값 가져오기
+    const dpr = window.devicePixelRatio;
+    
+    // 화면에 보이는 캔버스 크기
+    canvas.style.width = `${CANVAS_WIDTH}px`;
+    canvas.style.height = `${CANVAS_HEIGHT}px`;
+    
+    // 캔버스의 그리기 영역 크기
+    canvas.width = CANVAS_WIDTH * dpr;
+    canvas.height = CANVAS_HEIGHT * dpr;
+    
+    // 캔버스 크기 보정
+    ctx.scale(dpr, dpr);
 
-// 캔버스 크기 보정
-ctx.scale(dpr, dpr);
+    snake = new Snake();
 
-let snake = new Snake();
+    generateTargePoint(); // 초기 게임시작 목표물 생성
+
+    // 최고 점수 불러오기
+    if(localStorage.getItem('highscore')) {
+        highValue = parseInt(localStorage.getItem('highscore'));
+        highScore.innerHTML = localStorage.getItem('highscore');
+    }
+}
 
 document.addEventListener('keydown', (event) => {
     switch(event.key) {
@@ -68,7 +85,7 @@ document.addEventListener('keydown', (event) => {
 */
 setInterval(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = "rgb(85, 203, 205)";
     ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
 
     let curSnakeX = snake.body[0].x; // 현재 head 위치
@@ -82,6 +99,14 @@ setInterval(() => {
     // 목표물 충돌
     if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) {
         ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize) // 해당위치 목표물 제거
+        if(curScore.innerHTML == highScore.innerHTML) { // 최고점수 갱신
+            highValue += 1;
+            highScore.innerHTML = highValue;
+            localStorage.setItem('highscore', highValue);
+        }
+        curValue += 1;
+        console.log(curValue);
+        curScore.innerHTML = curValue;
         generateTargePoint();
     } else {
         snake.body.pop();  // 먹지 않았을 경우 꼬리를 제거
@@ -110,5 +135,3 @@ function generateTargePoint() {
         }
     }
 }
-
-generateTargePoint(); // 초기 게임시작 목표물
