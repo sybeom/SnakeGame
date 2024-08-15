@@ -8,9 +8,13 @@
 </head>
 <body>
     <div class="container">
-        <span class="cur-score">현재 점수 : </span>
-        <span class="high-score">최고 점수 :</span>
-        <canvas id="screen"></canvas>
+        <div class="header">
+            <span class="score" id="cur-score">현재 점수 : </span><span class="score-value" id="cur-score">0</span>
+            <span class="score" id="high-score">최고 점수 : </span> <span class="score-value" id="high-score">0</span>
+        </div>
+        <div class="game-screen"> 
+            <canvas id="screen"></canvas>
+        </div>
     </div>
     <script src="index.js"></script>
 </body>

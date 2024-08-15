@@ -5,31 +5,35 @@
 }
 
 body {
-    background-color: black;
+    background-color: rgb(226, 226, 226);
     height: 100vh;
     min-height: 100vh;
 }
+
 .container {
     position: relative;
-    display: inline-block;
-    background-color: red;
-    height: 688px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    display: inline-block;
 }
-.cur-score, .high-score {
-    position: absolute;
-    color: wheat;
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 512px;
+    height: 48px;
+    padding: 8px;
+    background: rgb(190, 173, 255);
+    border-radius: 12px 12px 0 0;
+    /* border-radius: 0 8px 0 8px; */
 }
-.cur-score {
-    top: -1.5em;
-    left: 0;
+
+.score {
+    font-weight: bold;
+    margin: 0 30px;
 }
-.high-score {
-    top: -1.5em;
-    left: 10em;
-}
-#screen {
-    position: relative;
+.game-screen {
+    background-color: rgb(35, 35, 35);
+    height: 688px;
 }

@@ -7,27 +7,16 @@ class Snake {
         };
         this.body = [this.head];
     }
-    write() {
-        for(var key in this) {
-            console.log(this[key]);
-        }
-    }
 }
 
 const canvas = document.querySelector('#screen');
 const highScore = document.querySelector('.cur-score');
 const ctx = canvas.getContext("2d");
-
 const CANVAS_WIDTH = 512; // 16배수, 16 * 32
 const CANVAS_HEIGHT = 688; // 16배수, 16 * 43
-let myRectSizeX = 16;
-let myRectSizeY = 16;
+const paddingSize = 16; // 캔버스 패딩효과. 목표물이 경계에 생겨 먹기힘든 불합리함을 없애기 위함
 let targetSize = 16; // 생성될 목표물 크기
-const paddingSize = 16; // 목표물이 경계에 생겨 먹기힘든 불합리함을 없애기 위함
-let curPosX = 0; // snake 사각형이 이동마다 새로 그려져야할 x 좌표
-let curPosY = 0;
-let curcurcurSakeY = 0;
-let targetPointX = 0; // 목표물 x 좌표
+let targetPointX = 0; // 목표물 x좌표
 let targetPointY = 0;
 let moveX = 0; // x좌표만큼 움직일 양
 let moveY = 0;
@@ -53,25 +42,21 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp': {
             moveX = 0;
             moveY = -16;
-            test();
             break;
         }
         case 'ArrowDown' : {
             moveX = 0;
             moveY = 16;
-            test();
             break;
         }
         case 'ArrowLeft' : {
             moveX = -16;
             moveY = 0;
-            test();
             break;
         }
         case 'ArrowRight' : {
             moveX = 16;
             moveY = 0;
-            test();
             break;
         }
     }
@@ -81,7 +66,7 @@ document.addEventListener('keydown', (event) => {
 *스네이크가 움직일때마다 꼬리를 제거하고 머리에 추가하는 방식으로
 *스네이크가 움직이는 것처럼 보이는 효과를 내는 로직
 */
-function test() {
+setInterval(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
     ctx.fillStyle = "blue";
     ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
@@ -91,14 +76,11 @@ function test() {
 
     curSnakeX += moveX;
     curSnakeY += moveY;
-    console.log(`curSnakeX : ${curSnakeX}`, `curSnakeY : ${curSnakeY}`);
     const newHead = { x: curSnakeX, y: curSnakeY };
     snake.body.unshift(newHead); // 배열의 처음에 추가
 
-    console.log('before : ' + `snake.body[0].x : ${snake.body[0].x}`, `snake.body[0].y : ${snake.body[0].y}`);
     // 목표물 충돌
     if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) {
-        console.log("충돌")
         ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize) // 해당위치 목표물 제거
         generateTargePoint();
     } else {
@@ -108,15 +90,13 @@ function test() {
     // 스네이크 그리기
     for(let i=0; i<snake.body.length; i++) {
         if(i == 0) {
-            ctx.fillStyle = "yellow"; // 머리 색상
+            ctx.fillStyle = "red"; // 머리 색상
         } else {
-            ctx.fillStyle = "black"; // 몸 색상
+            ctx.fillStyle = "white"; // 몸 색상
         }
         ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
     }
-    console.log('after : ' + `snake.body[0].x : ${snake.body[0].x}`, `snake.body[0].y : ${snake.body[0].y}`);
-}
-
+}, 50);
 
 // 목표물 무작위 생성
 function generateTargePoint() {
@@ -131,5 +111,4 @@ function generateTargePoint() {
     }
 }
 
-generateTargePoint(); // 초기 게임시작 목표물 생성
-test();
+generateTargePoint(); // 초기 게임시작 목표물
