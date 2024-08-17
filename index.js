@@ -2,8 +2,8 @@ class Snake {
     constructor() {
         this.size = 16;
         this.head = { 
-            x: 0,
-            y: 0
+            x: 16,
+            y: 16
         };
         this.body = [this.head];
     }
@@ -12,6 +12,7 @@ class Snake {
 const canvas = document.querySelector('#screen');
 const curScore = document.querySelector('#cur-score');
 const highScore = document.querySelector('#high-score');
+const gameScreen = document.querySelector('.game-screen');
 const ctx = canvas.getContext("2d");
 const CANVAS_WIDTH = 512; // 16배수, 16 * 32
 const CANVAS_HEIGHT = 688; // 16배수, 16 * 43
@@ -27,6 +28,7 @@ let snake = undefined;
 
 
 init();
+let game = gameLoop();
 
 function init() {
     // DPR 값 가져오기
@@ -59,21 +61,25 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp': {
             moveX = 0;
             moveY = -16;
+            
             break;
         }
         case 'ArrowDown' : {
             moveX = 0;
             moveY = 16;
+            
             break;
         }
         case 'ArrowLeft' : {
             moveX = -16;
             moveY = 0;
+            
             break;
         }
         case 'ArrowRight' : {
             moveX = 16;
             moveY = 0;
+            
             break;
         }
     }
@@ -83,45 +89,49 @@ document.addEventListener('keydown', (event) => {
 *스네이크가 움직일때마다 꼬리를 제거하고 머리에 추가하는 방식으로
 *스네이크가 움직이는 것처럼 보이는 효과를 내는 로직
 */
-setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
-    ctx.fillStyle = "rgb(85, 203, 205)";
-    ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
 
-    let curSnakeX = snake.body[0].x; // 현재 head 위치
-    let curSnakeY = snake.body[0].y;
-
-    curSnakeX += moveX;
-    curSnakeY += moveY;
-    const newHead = { x: curSnakeX, y: curSnakeY };
-    snake.body.unshift(newHead); // 배열의 처음에 추가
-
-    // 목표물 충돌
-    if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) {
-        ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize) // 해당위치 목표물 제거
-        if(curScore.innerHTML == highScore.innerHTML) { // 최고점수 갱신
-            highValue += 1;
-            highScore.innerHTML = highValue;
-            localStorage.setItem('highscore', highValue);
-        }
-        curValue += 1;
-        console.log(curValue);
-        curScore.innerHTML = curValue;
-        generateTargePoint();
-    } else {
-        snake.body.pop();  // 먹지 않았을 경우 꼬리를 제거
-    }
-
-    // 스네이크 그리기
-    for(let i=0; i<snake.body.length; i++) {
-        if(i == 0) {
-            ctx.fillStyle = "red"; // 머리 색상
+function gameLoop() {
+    setInterval(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
+        ctx.fillStyle = "rgb(85, 203, 205)";
+        ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
+        
+        let curSnakeX = snake.body[0].x; // 현재 head 위치
+        let curSnakeY = snake.body[0].y;
+        
+        curSnakeX += moveX;
+        curSnakeY += moveY;
+        const newHead = { x: curSnakeX, y: curSnakeY };
+        snake.body.unshift(newHead); // 배열의 처음에 추가
+        
+        // 목표물 충돌
+        if(snake.body[0].x == targetPointX && snake.body[0].y == targetPointY) { // body[0]은 머리
+            ctx.clearRect(snake.body[0].x, snake.body[0].y, targetSize, targetSize) // 해당위치 목표물 제거
+            if(curScore.innerHTML == highScore.innerHTML) { // 최고점수 갱신
+                highValue += 1;
+                highScore.innerHTML = highValue;
+                localStorage.setItem('highscore', highValue);
+            }
+            curValue += 1;
+            curScore.innerHTML = curValue;
+            generateTargePoint();
         } else {
-            ctx.fillStyle = "white"; // 몸 색상
+            snake.body.pop();  // 먹지 않았을 경우 꼬리를 제거
         }
-        ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
-    }
-}, 50);
+    
+        collideBoundary();
+        
+        // 스네이크 그리기
+        for(let i=0; i<snake.body.length; i++) {
+            if(i == 0) {
+                ctx.fillStyle = "red"; // 머리 색상
+            } else {
+                ctx.fillStyle = "white"; // 몸 색상
+            }
+            ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
+        }
+    }, 100);
+}
 
 // 목표물 무작위 생성
 function generateTargePoint() {
@@ -133,5 +143,15 @@ function generateTargePoint() {
         if(targetPointX % 16 == 0 && targetPointY % 16 == 0) {
             break;
         }
+    }
+}
+
+// 벽 충돌
+function collideBoundary() {
+    // body[0](머리)이 벽면의 길이 범위 값 안에 들고, 넘어간다면(0보다 작아진다면) 충돌로 판정
+    if((snake.body[0].x >= 0 || snake.body[0].x <= canvas.width) && snake.body[0].y < 0 || // x벽면 충돌
+        ((snake.body[0].y >= 0 || snake.body[0].y <= canvas.height) && snake.body[0].x < 0)) { // y벽면 충돌
+       alert("eqwe");
+       clearInterval(game); // 게임 종료
     }
 }
