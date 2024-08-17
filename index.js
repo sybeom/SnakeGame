@@ -20,6 +20,7 @@ const paddingSize = 16; // 캔버스 패딩효과. 목표물이 경계에 생겨
 let targetSize = 16; // 생성될 목표물 크기
 let targetPointX = 0; // 목표물 x좌표
 let targetPointY = 0;
+let previousDirection = null;
 let moveX = 0; // x좌표만큼 움직일 양
 let moveY = 0;
 let curValue = 0; // 현재 점수
@@ -56,26 +57,39 @@ function init() {
     }
 }
 
+// 스네이크 방향키 이벤트
 document.addEventListener('keydown', (event) => {
     switch(event.key) {
         case 'ArrowUp': {
-            moveX = 0;
-            moveY = -16;
+            if(previousDirection != 'ArrowDown') { // 진행중인 방향의 반대방향 전환 막기 위함
+                moveY = -16;
+                moveX = 0;
+                previousDirection = 'ArrowUp'
+            }
             break;
         }
         case 'ArrowDown' : {
-            moveX = 0;
-            moveY = 16;
+            if(previousDirection != 'ArrowUp') {
+                moveX = 0;
+                moveY = 16;
+                previousDirection = 'ArrowDown';
+            }
             break;
         }
         case 'ArrowLeft' : {
-            moveX = -16;
-            moveY = 0;
+            if(previousDirection != 'ArrowRight') {
+                moveX = -16;
+                moveY = 0;
+                previousDirection = 'ArrowLeft'
+            }
             break;
         }
         case 'ArrowRight' : {
-            moveX = 16;
-            moveY = 0;
+            if(previousDirection != 'ArrowLeft') {
+                moveX = 16;
+                moveY = 0;
+                previousDirection = 'ArrowRight';
+            }
             break;
         }
     }
@@ -149,7 +163,7 @@ function collideBoundary() {
         ((snake.body[0].y >= 0 || snake.body[0].y <= canvas.height) && snake.body[0].x < 0)) { // y벽면 충돌
        alert("게임 오버!");
        clearInterval(game); // 게임 종료
-       reset();
+       reset(); // 값 리셋
        gameLoop();
     }
 }
