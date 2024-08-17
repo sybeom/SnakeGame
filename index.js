@@ -20,7 +20,7 @@ const paddingSize = 16; // 캔버스 패딩효과. 목표물이 경계에 생겨
 let targetSize = 16; // 생성될 목표물 크기
 let targetPointX = 0; // 목표물 x좌표
 let targetPointY = 0;
-let previousDirection = null;
+let previousDirection = undefined;
 let moveX = 0; // x좌표만큼 움직일 양
 let moveY = 0;
 let curValue = 0; // 현재 점수
@@ -80,7 +80,7 @@ document.addEventListener('keydown', (event) => {
             if(previousDirection != 'ArrowRight') {
                 moveX = -16;
                 moveY = 0;
-                previousDirection = 'ArrowLeft'
+                previousDirection = 'ArrowLeft';
             }
             break;
         }
@@ -159,9 +159,9 @@ function generateTargePoint() {
 // 벽 충돌
 function collideBoundary() {
     // body[0](머리)이 벽면의 길이 범위 값 안에 들고, 넘어간다면(0보다 작아진다면) 충돌로 판정
-    if((snake.body[0].x >= 0 || snake.body[0].x <= canvas.width) && snake.body[0].y < 0 || // x벽면 충돌
-        ((snake.body[0].y >= 0 || snake.body[0].y <= canvas.height) && snake.body[0].x < 0)) { // y벽면 충돌
-       alert("게임 오버!");
+    if((snake.body[0].x < 0 || snake.body[0].x >= CANVAS_WIDTH) || // 상단 벽면 충돌
+        (snake.body[0].y < 0 || snake.body[0].y >= CANVAS_HEIGHT)) {  // 좌측 벽면 충돌 
+       alert('게임 오버!');
        clearInterval(game); // 게임 종료
        reset(); // 값 리셋
        gameLoop();
@@ -174,4 +174,5 @@ function reset() {
     moveY = 0;
     curValue = 0;
     curScore.innerHTML = 0;
+    previousDirection = undefined;
 }
