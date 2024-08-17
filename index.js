@@ -28,7 +28,7 @@ let snake = undefined;
 
 
 init();
-let game = gameLoop();
+gameLoop();
 
 function init() {
     // DPR 값 가져오기
@@ -61,25 +61,21 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp': {
             moveX = 0;
             moveY = -16;
-            
             break;
         }
         case 'ArrowDown' : {
             moveX = 0;
             moveY = 16;
-            
             break;
         }
         case 'ArrowLeft' : {
             moveX = -16;
             moveY = 0;
-            
             break;
         }
         case 'ArrowRight' : {
             moveX = 16;
             moveY = 0;
-            
             break;
         }
     }
@@ -91,7 +87,7 @@ document.addEventListener('keydown', (event) => {
 */
 
 function gameLoop() {
-    setInterval(() => {
+    game = setInterval(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
         ctx.fillStyle = "rgb(85, 203, 205)";
         ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
@@ -153,5 +149,10 @@ function collideBoundary() {
         ((snake.body[0].y >= 0 || snake.body[0].y <= canvas.height) && snake.body[0].x < 0)) { // y벽면 충돌
        alert("eqwe");
        clearInterval(game); // 게임 종료
+       snake.body[0].x = snake.head.x; // 머리 원위치
+       snake.body[0].y = snake.head.y;
+       moveX = 0; // 이동량 원위치
+       moveY = 0;
+       gameLoop();
     }
 }
