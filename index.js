@@ -26,6 +26,7 @@ let moveY = 0;
 let curValue = 0; // 현재 점수
 let highValue = 0; // 최고 점수
 let snake = undefined;
+let game = undefined; // setInterVal
 
 
 init();
@@ -101,7 +102,7 @@ document.addEventListener('keydown', (event) => {
 */
 
 function gameLoop() {
-    game = setInterval(() => {
+    game = setInterval(()=> {
         ctx.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 전부 클리어
         ctx.fillStyle = "rgb(85, 203, 205)"; // 목표물 색상
         ctx.fillRect(targetPointX, targetPointY, targetSize, targetSize); // 목표물 생성    
@@ -126,9 +127,21 @@ function gameLoop() {
             curScore.innerHTML = curValue;
             generateTargePoint();
         } else {
-            snake.body.pop();  // 먹지 않았을 경우 꼬리를 제거
+            snake.body.pop();  // 먹지 않았을 경우(일반적인 이동 상태) 꼬리를 제거
         }
-    
+
+        // 몸에 충돌
+        for (let i = 1; i < snake.body.length; i++) {
+            if (snake.body[0].x === snake.body[i].x && snake.body[0].y === snake.body[i].y) {
+                // 머리가 몸통의 어떤 부분과라도 겹치면 게임 오버
+                alert('게임 오버!');
+                clearInterval(game); // 게임 종료
+                reset(); // 값 리셋
+                gameLoop();
+                return; // 충돌 시에는 더 이상 처리할 필요 없음
+            }
+        }
+
         collideBoundary();
         
         // 스네이크 그리기
@@ -141,6 +154,7 @@ function gameLoop() {
             ctx.fillRect(snake.body[i].x, snake.body[i].y, snake.size, snake.size);
         }
     }, 50);
+ 
 }
 
 // 목표물 무작위 생성
@@ -168,9 +182,10 @@ function collideBoundary() {
     }
 }
 
+// 값들 리셋
 function reset() {
     snake = new Snake();
-    moveX = 0; // 이동량 원위치
+    moveX = 0;
     moveY = 0;
     curValue = 0;
     curScore.innerHTML = 0;
